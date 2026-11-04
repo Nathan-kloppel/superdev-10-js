@@ -3,7 +3,9 @@ let produtos = [
   { id: 1, nome: "Luminária de mesa", preco: 49.99, categoria: "Iluminação", imagem: "assets/luminaria.webp", favorito: false },
   { id: 2, nome: "Vaso para plantas", preco: 14.99, categoria: "Decoração", imagem: "assets/vaso.webp", favorito: false },
   { id: 3, nome: "Cadeira de escritório", preco: 499.99, categoria: "Móveis", imagem: "assets/cadeira.webp", favorito: false }
-];
+]
+
+let proximoId = 4;
 
 function formatarPreco(valor) {
   return "R$ " + valor.toFixed(2).replace(".", ",");
@@ -18,6 +20,8 @@ const botaoDestaque = document.querySelector("#alternar-destaque");
 const quantidadeFavoritos = document.querySelector("#quantidade-favoritos");
 const campoPreco = document.querySelector("#preco");
 const campoCategoria = document.querySelector("#categoria");
+const campoNome = document.querySelector("#nome")
+const contadorNome = document.querySelector("#contador-nome")
 
 
 botaoAlterar.addEventListener("click", () => {
@@ -105,6 +109,14 @@ function renderizarProdutos() {
     botao.setAttribute("aria-label", "Remover " + produto.nome);
     botao.addEventListener("click", removerProduto);
 
+    const botaoEditar = document.createElement("button");
+    botaoEditar.classList.add("acao-produto");
+    botaoEditar.type = "button";
+    botaoEditar.textContent = "Editar";
+    botaoEditar.dataset.id = produto.id;
+    botaoEditar.setAttribute("aria-label", "Editar " + produto.nome);
+    botaoEditar.addEventListener("click", editarProduto)
+
 
     const botaoFavorito = document.createElement("button")
 
@@ -114,11 +126,13 @@ function renderizarProdutos() {
     botaoFavorito.dataset.id = produto.id;
     botaoFavorito.addEventListener("click", alternarFavorito);
     botaoFavorito.setAttribute("aria-pressed", produto.favorito);
+    
 
 
     // Trabalho: crie e conecte o botão de favoritos deste cartão.
     acoes.appendChild(botao);
     acoes.appendChild(botaoFavorito);
+    acoes.appendChild(botaoEditar);
 
     item.appendChild(imagem);
     item.appendChild(categoria);
@@ -126,6 +140,8 @@ function renderizarProdutos() {
     item.appendChild(preco);
     item.appendChild(acoes);
     lista.appendChild(item);
+
+    
   });
 
   const favoritos = produtos.filter((produto) => {
@@ -175,25 +191,115 @@ renderizarProdutos();
 
 //################################## 03 / 11 ################################
 
-function salvarProdutos(evento) {
+//#################### adicionar a coleção #########################
+
+
+const mensagem = document.querySelector("#mensagem");
+
+function mostrarErro(campo, texto) {
+  campo.classList.add("invalido");
+  campo.setAttribute("aria-invalid", "true");
+
+  mensagem.textContent = texto;
+  mensagem.classList.add("erro");
+
+  campo.focus();
+}
+
+const botaoSalvar = document.querySelector("#salvar-produto");
+const botaoCancelar = document.querySelector("#cancelar-edicao");
+
+
+let idEmEdicao = null;
+
+function editarProduto(evento) {
+  const id = Number(evento.currentTarget.dataset.id);
+
+  const produto = produtos.find((item) => {
+    return item.id === id;
+  })
+
+  if (!produto) return;
+
+  campoNome.value = produto.nome;
+  campoPreco.value = produto.preco;
+  campoCategoria.value = produto.categoria;
+  contadorNome.textContent = produto.nome.length + " caracteres"
+  botaoSalvar.textContent = "salvar alterações";
+  botaoCancelar.hidden = false;
+
+  campoNome.focus();
+}
+
+botaoCancelar.addEventListener("click", () => {
+  finalizarFormulario();
+  mensagem.textContent = "edição cancelada.";
+})
+
+const formulario = document.querySelector("#formulario")
+
+function salvarProduto(evento) {
+  evento.preventDefault();
+
     const nome = campoNome.value.trim();
     const preco = Number(campoPreco.value);
 
     if(nome.length < 2) {
-      campoNome.classList.add("invalido");
+      campoNome.classList.add(campoNome, "invalido");
       campoNome.focus();
       return;
     }
 
+     if(preco <= 0) {
+      campoPreco.classList.add(campoPreco, "valor minimo 0,01")
+      campoPreco.focus();
+      return;
+    }
+
+    if(idEmEdicao !== null) {
+      const produto = produtos.find((item) => {
+        return item.id === idEmEdicao
+      })
+
+      produto.nome = nome;
+      produto.preco = preco;
+      produto.categoria = categoria;
+    } else {
+      produtos.push ({
+        id: proximoId,
+        nome: nome,
+        preco: preco,
+        categoria: categoria,
+        imagem: "assets/nova-peca.svg"
+      })
+    }
+
     produtos.push({
-      id: 4,
+      id: proximoId,
       nome: nome,
       preco : preco,
       categoria: categoria,
-      imagem: "assets/nova-peca.svg"
+      imagem: "assets/cadeira.webp"
     })
+    proximoId++;
 
-    renderizarProdutos()
+    renderizarProdutos();
+    finalizarFormulario();
 }
+
+function finalizarFormulario() {
+  formulario.reset();
+
+  contadorNome.textContent = "0 caracteres";
+  campoNome.classList.remove("invalido");
+  campoPreco.classList.remove("invalido");
+
+  campoNome.removeAttribute("aria-invalid");
+  campoPreco.removeAttribute("aria-invalid");
+
+  campoNome.focus();
+}
+
+formulario.addEventListener("submit", salvarProduto);
 
 
