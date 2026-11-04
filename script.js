@@ -16,6 +16,9 @@ const mensagemTitulo = document.querySelector("#mensagem-titulo");
 const colecao = document.querySelector("#colecao");
 const botaoDestaque = document.querySelector("#alternar-destaque");
 const quantidadeFavoritos = document.querySelector("#quantidade-favoritos");
+const campoPreco = document.querySelector("#preco");
+const campoCategoria = document.querySelector("#categoria");
+
 
 botaoAlterar.addEventListener("click", () => {
   const novoTitulo = campoTitulo.value.trim();
@@ -169,3 +172,28 @@ function alternarFavorito(evento) {
 campoOrdem.addEventListener("change", renderizarProdutos);
 
 renderizarProdutos();
+
+//################################## 03 / 11 ################################
+
+function salvarProdutos(evento) {
+    const nome = campoNome.value.trim();
+    const preco = Number(campoPreco.value);
+
+    if(nome.length < 2) {
+      campoNome.classList.add("invalido");
+      campoNome.focus();
+      return;
+    }
+
+    produtos.push({
+      id: 4,
+      nome: nome,
+      preco : preco,
+      categoria: categoria,
+      imagem: "assets/nova-peca.svg"
+    })
+
+    renderizarProdutos()
+}
+
+
