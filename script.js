@@ -1,305 +1,272 @@
-// Trabalho: acrescente o estado de favorito a cada produto.
 let produtos = [
-  { id: 1, nome: "Luminária de mesa", preco: 49.99, categoria: "Iluminação", imagem: "assets/luminaria.webp", favorito: false },
-  { id: 2, nome: "Vaso para plantas", preco: 14.99, categoria: "Decoração", imagem: "assets/vaso.webp", favorito: false },
-  { id: 3, nome: "Cadeira de escritório", preco: 499.99, categoria: "Móveis", imagem: "assets/cadeira.webp", favorito: false }
+    { id: 1, nome: "Luminária de mesa", preco: 49.99, categoria: "Iluminação", imagem: "./assets/luminaria.webp" },
+    { id: 2, nome: "Vaso para plantas", preco: 14.99, categoria: "Decoração", imagem: "./assets/vaso.webp" },
+    { id: 3, nome: "Cadeira de escritõrio", preco: 499.99, categoria: "Móveis", imagem: "./assets/cadeira.webp" }
 ]
 
 let proximoId = 4;
 
-function formatarPreco(valor) {
-  return "R$ " + valor.toFixed(2).replace(".", ",");
-}
-
 const titulo = document.querySelector("#titulo");
 const campoTitulo = document.querySelector("#novo-titulo");
 const botaoAlterar = document.querySelector("#alterar-titulo");
-const mensagemTitulo = document.querySelector("#mensagem-titulo");
 const colecao = document.querySelector("#colecao");
 const botaoDestaque = document.querySelector("#alternar-destaque");
-const quantidadeFavoritos = document.querySelector("#quantidade-favoritos");
+
+const mensagemTitulo = document.querySelector("#mensagem-titulo");
+const campoNome = document.querySelector("#nome");
 const campoPreco = document.querySelector("#preco");
 const campoCategoria = document.querySelector("#categoria");
-const campoNome = document.querySelector("#nome")
-const contadorNome = document.querySelector("#contador-nome")
-
+const contadorNome = document.querySelector("#contador-nome");
 
 botaoAlterar.addEventListener("click", () => {
-  const novoTitulo = campoTitulo.value.trim();
-  campoTitulo.classList.remove("invalido");
-  campoTitulo.removeAttribute("aria-invalid");
-  mensagemTitulo.classList.remove("erro", "sucesso");
+    const novoTitulo = campoTitulo.value.trim();
 
-  if (novoTitulo === "") {
-    campoTitulo.classList.add("invalido");
-    campoTitulo.setAttribute("aria-invalid", "true");
-    mensagemTitulo.textContent = "Digite um título para a coleção.";
-    mensagemTitulo.classList.add("erro");
-    return;
-  }
+    campoTitulo.classList.remove("invalido");
+    campoTitulo.removeAttribute("aria-invalid");
+    mensagemTitulo.classList.remove("erro");
 
-  titulo.textContent = novoTitulo;
-  mensagemTitulo.textContent = "Título atualizado.";
-  mensagemTitulo.classList.add("sucesso");
-});
+    if (novoTitulo === "") {
+        campoTitulo.classList.add("invalido");
+        campoTitulo.setAttribute("aria-invalid", "true");
+
+        mensagemTitulo.textContent = "Digite um titulo para a coleção.";
+        mensagemTitulo.classList.add("erro");
+        return;
+    }
+
+    titulo.textContent = campoTitulo.value;
+    mensagemTitulo.textContent = "Titulo atualizado.";
+    mensagemTitulo.classList.add("sucesso");
+})
 
 botaoDestaque.addEventListener("click", () => {
-  colecao.classList.toggle("destaque");
+    colecao.classList.toggle("destaque");
 
-  if (colecao.classList.contains("destaque")) {
-    botaoDestaque.textContent = "Retirar destaque ↗";
-  } else {
-    botaoDestaque.textContent = "Destacar coleção ↗";
-  }
-});
+    if (colecao.classList.contains("destaque")) {
+        botaoDestaque.textContent = "Retirar destaque ↗";
+    } else {
+        botaoDestaque.textContent = "Destacar coleção ↗";
+    }
+})
+
+campoNome.addEventListener("input", () => {
+    contadorNome.textContent = campoNome.value.length + " caracteres";
+})
+
+// ################################################# ETAPA 2 ###################################################################
 
 const lista = document.querySelector("#lista-produtos");
 const quantidade = document.querySelector("#quantidade");
+const ordem = document.querySelector("#ordem");
 const totalElemento = document.querySelector("#total");
 const avisoVazio = document.querySelector("#aviso-vazio");
-const campoOrdem = document.querySelector("#ordem");
-
-function aplicarOrdenacao() {
-  if (campoOrdem.value === "crescente") {
-    produtos.sort((a, b) => a.preco - b.preco);
-  } else if (campoOrdem.value === "decrescente") {
-    produtos.sort((a, b) => b.preco - a.preco);
-  } else if (campoOrdem.value === "nome") {
-    produtos.sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
-  } else {
-    produtos.sort((a, b) => a.id - b.id);
-  }
-}
-
-function renderizarProdutos() {
-  aplicarOrdenacao();
-  lista.textContent = "";
-
-  produtos.forEach((produto) => {
-    const item = document.createElement("li");
-    const imagem = document.createElement("img");
-    const categoria = document.createElement("p");
-    const nome = document.createElement("h3");
-    const preco = document.createElement("p");
-    const acoes = document.createElement("div");
-    const botao = document.createElement("button");
-    
-
-    item.classList.add("produto");
-
-    if (produto.favorito === true) {
-      item.classList.add("produto-favorito");
-    }
-
-    item.dataset.id = produto.id;
-    imagem.classList.add("produto-imagem");
-    imagem.src = produto.imagem;
-    imagem.alt = produto.nome;
-    categoria.classList.add("produto-categoria");
-    categoria.textContent = produto.categoria;
-    nome.classList.add("produto-nome");
-    nome.textContent = produto.nome;
-    preco.classList.add("produto-preco");
-    preco.textContent = formatarPreco(produto.preco);
-    acoes.classList.add("produto-acoes");
-    botao.classList.add("acao-produto");
-    botao.type = "button";
-    botao.textContent = "Remover";
-    botao.dataset.id = produto.id;
-    botao.setAttribute("aria-label", "Remover " + produto.nome);
-    botao.addEventListener("click", removerProduto);
-
-    const botaoEditar = document.createElement("button");
-    botaoEditar.classList.add("acao-produto");
-    botaoEditar.type = "button";
-    botaoEditar.textContent = "Editar";
-    botaoEditar.dataset.id = produto.id;
-    botaoEditar.setAttribute("aria-label", "Editar " + produto.nome);
-    botaoEditar.addEventListener("click", editarProduto)
-
-
-    const botaoFavorito = document.createElement("button")
-
-    botaoFavorito.classList.add("acao-produto", "botao-favorito");
-    botaoFavorito.type = "button";
-    botaoFavorito.textContent = produto.favorito ? "Desfavoritar" : "Favoritar";
-    botaoFavorito.dataset.id = produto.id;
-    botaoFavorito.addEventListener("click", alternarFavorito);
-    botaoFavorito.setAttribute("aria-pressed", produto.favorito);
-    
-
-
-    // Trabalho: crie e conecte o botão de favoritos deste cartão.
-    acoes.appendChild(botao);
-    acoes.appendChild(botaoFavorito);
-    acoes.appendChild(botaoEditar);
-
-    item.appendChild(imagem);
-    item.appendChild(categoria);
-    item.appendChild(nome);
-    item.appendChild(preco);
-    item.appendChild(acoes);
-    lista.appendChild(item);
-
-    
-  });
-
-  const favoritos = produtos.filter((produto) => {
-    return produto.favorito === true;
-  });
-
-  const quantidadeDeFavoritos = favoritos.length;
-
-  quantidadeFavoritos.textContent = quantidadeDeFavoritos;
-
-
-  const total = produtos.reduce((acumulador, produto) => {
-    return acumulador + produto.preco;
-  }, 0);
-
-  quantidade.textContent = produtos.length;
-  totalElemento.textContent = formatarPreco(total);
-  avisoVazio.hidden = produtos.length > 0;
-  // Trabalho: atualize aqui a quantidade de favoritos.
-  // Opcional: calcule a soma e mostre #resumo-valor-favoritos.
-}
-
-function removerProduto(evento) {
-  const id = Number(evento.currentTarget.dataset.id);
-
-  produtos = produtos.filter((produto) => {
-    return produto.id !== id;
-  });
-
-  renderizarProdutos();
-}
-
-function alternarFavorito(evento) {
-  const id = Number(evento.currentTarget.dataset.id);
-
-  const produto = produtos.find((produto) => {
-    
-    return produto.id === id
-  })
-  produto.favorito = !produto.favorito;
-  renderizarProdutos();
-}
-
-campoOrdem.addEventListener("change", renderizarProdutos);
-
-renderizarProdutos();
-
-//################################## 03 / 11 ################################
-
-//#################### adicionar a coleção #########################
-
-
-const mensagem = document.querySelector("#mensagem");
-
-function mostrarErro(campo, texto) {
-  campo.classList.add("invalido");
-  campo.setAttribute("aria-invalid", "true");
-
-  mensagem.textContent = texto;
-  mensagem.classList.add("erro");
-
-  campo.focus();
-}
 
 const botaoSalvar = document.querySelector("#salvar-produto");
 const botaoCancelar = document.querySelector("#cancelar-edicao");
 
+function renderizarProdutos() {
+    aplicarOrdenacao();
+    lista.textContent = "";
+
+    produtos.forEach((produto) => {
+        const item = document.createElement("li");
+        const imagem = document.createElement("img");
+        const categoria = document.createElement("p");
+        const nome = document.createElement("h3");
+        const preco = document.createElement("p");
+        const acoes = document.createElement("div");
+        const botao = document.createElement("button");
+
+        item.classList.add("produto");
+        item.dataset.id = produto.id;
+
+        imagem.classList.add("produto-imagem");
+        imagem.src = produto.imagem;
+        imagem.alt = produto.nome;
+
+        categoria.classList.add("produto-categoria");
+        categoria.textContent = produto.categoria;
+
+        nome.classList.add("produto-nome");
+        nome.textContent = produto.nome;
+
+        preco.classList.add("produto-preco");
+        preco.textContent = formatarPreco(produto.preco);
+
+        acoes.classList.add("produto-acoes");
+
+        botao.classList.add("acao-produto");
+        botao.type = "button";
+        botao.dataset.id = produto.id;
+        botao.textContent = "Remover";
+        botao.addEventListener("click", removerProduto);
+
+        const botaoEditar = document.createElement("button");
+        botaoEditar.classList.add("acao-produto");
+        botaoEditar.type = "button";
+        botaoEditar.textContent = "Editar";
+        botaoEditar.dataset.id = produto.id;
+        botaoEditar.setAttribute("aria-label", "Editar " + produto.nome);
+        botaoEditar.addEventListener("click", editarProduto);
+
+        item.appendChild(imagem);
+        item.appendChild(categoria);
+        item.appendChild(nome);
+        item.appendChild(preco);
+
+        acoes.appendChild(botaoEditar);
+        acoes.appendChild(botao);
+
+        item.append(acoes);
+
+        lista.appendChild(item);
+    })
+
+    const total = produtos.reduce((acumulador, produto) => {
+        return acumulador + produto.preco;
+    }, 0)
+
+    quantidade.textContent = produtos.length;
+    totalElemento.textContent = formatarPreco(total);
+    avisoVazio.hidden = produtos.length > 0;
+}
+
+function formatarPreco(valor) {
+    return "R$ " + valor.toFixed(2).replace(".", ",");
+}
+
+function removerProduto(evento) {
+    const id = Number(evento.currentTarget.dataset.id);
+
+    produtos = produtos.filter((produto) => {
+        return produto.id !== id;
+    })
+
+    renderizarProdutos();
+}
+
+function aplicarOrdenacao() {
+    if (ordem.value === "crescente") {
+        produtos.sort((a, b) => a.preco - b.preco);
+    }
+    else if (ordem.value === "decrescente") {
+        produtos.sort((a, b) => b.preco - a.preco);
+    }
+    else if (ordem.value === "nome") {
+        produtos.sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
+    }
+    else {
+        produtos.sort((a, b) => a.id - b.id);
+    }
+}
+
+const mensagem = document.querySelector("#mensagem");
+
+function mostrarErro(campo, texto) {
+    campo.classList.add("invalido");
+    campo.setAttribute("aria-invalid", "true");
+
+    mensagem.textContent = texto;
+    mensagem.classList.add("erro");
+
+    campo.focus();
+}
 
 let idEmEdicao = null;
 
 function editarProduto(evento) {
-  const id = Number(evento.currentTarget.dataset.id);
+    const id = Number(evento.currentTarget.dataset.id);
 
-  const produto = produtos.find((item) => {
-    return item.id === id;
-  })
+    const produto = produtos.find((item) => {
+        return item.id === id;
+    })
 
-  if (!produto) return;
+    if (!produto) return;
 
-  campoNome.value = produto.nome;
-  campoPreco.value = produto.preco;
-  campoCategoria.value = produto.categoria;
-  contadorNome.textContent = produto.nome.length + " caracteres"
-  botaoSalvar.textContent = "salvar alterações";
-  botaoCancelar.hidden = false;
+    idEmEdicao = id;
 
-  campoNome.focus();
+    campoNome.value = produto.nome;
+    campoPreco.value = produto.preco;
+    campoCategoria.value = produto.categoria;
+    contadorNome.textContent = produto.nome.length + " caracteres";
+    botaoSalvar.textContent = "Salvar alterações";
+    botaoCancelar.hidden = false;
+
+    campoNome.focus();
 }
 
 botaoCancelar.addEventListener("click", () => {
-  finalizarFormulario();
-  mensagem.textContent = "edição cancelada.";
+    finalizarFormulario();
+    mensagem.textContent = "Edição cancelada.";
 })
 
-const formulario = document.querySelector("#formulario")
+
+const formulario = document.querySelector("#formulario");
 
 function salvarProduto(evento) {
-  evento.preventDefault();
+    evento.preventDefault();
 
     const nome = campoNome.value.trim();
     const preco = Number(campoPreco.value);
+    const categoria = campoCategoria.value;
 
-    if(nome.length < 2) {
-      campoNome.classList.add(campoNome, "invalido");
-      campoNome.focus();
-      return;
+    if (nome.length < 2) {
+        mostrarErro(campoNome, "Informe um nome com pelo menos 2 caracteres.");
+        return;
     }
 
-     if(preco <= 0) {
-      campoPreco.classList.add(campoPreco, "valor minimo 0,01")
-      campoPreco.focus();
-      return;
+    if (preco <= 0) {
+        mostrarErro(campoPreco, "Informe um preço maior que zero.");
+        return;
     }
 
-    if(idEmEdicao !== null) {
-      const produto = produtos.find((item) => {
-        return item.id === idEmEdicao
-      })
+    if (idEmEdicao !== null) {
+        const produto = produtos.find((item) => {
+            return item.id === idEmEdicao;
+        })
 
-      produto.nome = nome;
-      produto.preco = preco;
-      produto.categoria = categoria;
+        produto.nome = nome;
+        produto.preco = preco;
+        produto.categoria = categoria;
     } else {
-      produtos.push ({
-        id: proximoId,
-        nome: nome,
-        preco: preco,
-        categoria: categoria,
-        imagem: "assets/nova-peca.svg"
-      })
+        produtos.push({
+            id: proximoId,
+            nome: nome,
+            preco: preco,
+            categoria: categoria,
+            imagem: "assets/nova-peca.svg"
+        });
+        proximoId++;
     }
-
-    produtos.push({
-      id: proximoId,
-      nome: nome,
-      preco : preco,
-      categoria: categoria,
-      imagem: "assets/cadeira.webp"
-    })
-    proximoId++;
 
     renderizarProdutos();
+
+    if (idEmEdicao !== null) {
+        mensagem.textContent = "Peça atualizada.";
+        mensagem.classList.add("sucesso");
+    } else {
+        mensagem.textContent = "Peça adicionada à coleção";
+        mensagem.classList.add("sucesso");
+    }
+    
     finalizarFormulario();
 }
 
 function finalizarFormulario() {
-  formulario.reset();
+    formulario.reset();
 
-  contadorNome.textContent = "0 caracteres";
-  campoNome.classList.remove("invalido");
-  campoPreco.classList.remove("invalido");
+    contadorNome.textContent = "0 caracteres";
+    campoNome.classList.remove("invalido");
+    campoPreco.classList.remove("invalido");
 
-  campoNome.removeAttribute("aria-invalid");
-  campoPreco.removeAttribute("aria-invalid");
+    campoNome.removeAttribute("aria-invalid");
+    campoPreco.removeAttribute("aria-invalid");
 
-  campoNome.focus();
+    campoNome.focus();
 }
 
 formulario.addEventListener("submit", salvarProduto);
 
+ordem.addEventListener("change", renderizarProdutos);
 
+renderizarProdutos();
