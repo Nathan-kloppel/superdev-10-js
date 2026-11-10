@@ -8,6 +8,7 @@
   <link rel="icon" href="assets/marca.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="favoritos.css">
+  <script src="validacao-colecao.js" defer></script>
   <script src="script.js" defer></script>
 </head>
 <body>
@@ -116,7 +117,7 @@
               <div id="resumo-valor-favoritos" hidden><strong id="total-favoritos">R$ 0,00</strong><span>valor dos favoritos</span></div>
             </div>
           </section>
-
+          <p id="mensagem-armazenamento" class="mensagem" role="status"></p>
           <ul id="lista-produtos" class="lista-produtos">
             <li class="produto" data-id="1">
               <img class="produto-imagem" src="assets/luminaria.webp" alt="Luminária de mesa" width="240" height="180">
