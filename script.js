@@ -1,7 +1,13 @@
 let produtos = [
+<<<<<<< HEAD
   { id: 1, nome: "Luminária de mesa", preco: 49.99, categoria: "Iluminação", imagem: "./assets/luminaria.webp" },
   { id: 2, nome: "Vaso para plantas", preco: 14.99, categoria: "Decoração", imagem: "./assets/vaso.webp" },
   { id: 3, nome: "Cadeira de escritõrio", preco: 499.99, categoria: "Móveis", imagem: "./assets/cadeira.webp" }
+=======
+    { id: 1, nome: "Luminária de mesa", preco: 49.99, categoria: "Iluminação", imagem: "./assets/luminaria.webp" },
+    { id: 2, nome: "Vaso para plantas", preco: 14.99, categoria: "Decoração", imagem: "./assets/vaso.webp" },
+    { id: 3, nome: "Cadeira de escritõrio", preco: 499.99, categoria: "Móveis", imagem: "./assets/cadeira.webp" }
+>>>>>>> 59e191f78bf9cb5df0161deb97da289703bdfcc1
 ]
 
 let proximoId = 4;
@@ -19,6 +25,7 @@ const campoCategoria = document.querySelector("#categoria");
 const contadorNome = document.querySelector("#contador-nome");
 
 botaoAlterar.addEventListener("click", () => {
+<<<<<<< HEAD
   const novoTitulo = campoTitulo.value.trim();
 
   campoTitulo.classList.remove("invalido");
@@ -38,11 +45,32 @@ botaoAlterar.addEventListener("click", () => {
   mensagemTitulo.textContent = "Titulo atualizado.";
   mensagemTitulo.classList.add("sucesso");
   salvarcolecao();
+=======
+    const novoTitulo = campoTitulo.value.trim();
+
+    campoTitulo.classList.remove("invalido");
+    campoTitulo.removeAttribute("aria-invalid");
+    mensagemTitulo.classList.remove("erro");
+
+    if (novoTitulo === "") {
+        campoTitulo.classList.add("invalido");
+        campoTitulo.setAttribute("aria-invalid", "true");
+
+        mensagemTitulo.textContent = "Digite um titulo para a coleção.";
+        mensagemTitulo.classList.add("erro");
+        return;
+    }
+
+    titulo.textContent = campoTitulo.value;
+    mensagemTitulo.textContent = "Titulo atualizado.";
+    mensagemTitulo.classList.add("sucesso");
+>>>>>>> 59e191f78bf9cb5df0161deb97da289703bdfcc1
 })
 
 botaoDestaque.addEventListener("click", () => {
-  colecao.classList.toggle("destaque");
+    colecao.classList.toggle("destaque");
 
+<<<<<<< HEAD
   if (colecao.classList.contains("destaque")) {
     botaoDestaque.textContent = "Retirar destaque ↗";
   } else {
@@ -52,6 +80,17 @@ botaoDestaque.addEventListener("click", () => {
 
 campoNome.addEventListener("input", () => {
   contadorNome.textContent = campoNome.value.length + " caracteres";
+=======
+    if (colecao.classList.contains("destaque")) {
+        botaoDestaque.textContent = "Retirar destaque ↗";
+    } else {
+        botaoDestaque.textContent = "Destacar coleção ↗";
+    }
+})
+
+campoNome.addEventListener("input", () => {
+    contadorNome.textContent = campoNome.value.length + " caracteres";
+>>>>>>> 59e191f78bf9cb5df0161deb97da289703bdfcc1
 })
 
 // ################################################# ETAPA 2 ###################################################################
@@ -61,6 +100,7 @@ const quantidade = document.querySelector("#quantidade");
 const ordem = document.querySelector("#ordem");
 const totalElemento = document.querySelector("#total");
 const avisoVazio = document.querySelector("#aviso-vazio");
+<<<<<<< HEAD
 
 const botaoSalvar = document.querySelector("#salvar-produto");
 const botaoCancelar = document.querySelector("#cancelar-edicao");
@@ -181,17 +221,132 @@ function mostrarErro(campo, texto) {
   campo.focus();
 }
 
+=======
+
+const botaoSalvar = document.querySelector("#salvar-produto");
+const botaoCancelar = document.querySelector("#cancelar-edicao");
+
+function renderizarProdutos() {
+    aplicarOrdenacao();
+    lista.textContent = "";
+
+    produtos.forEach((produto) => {
+        const item = document.createElement("li");
+        const imagem = document.createElement("img");
+        const categoria = document.createElement("p");
+        const nome = document.createElement("h3");
+        const preco = document.createElement("p");
+        const acoes = document.createElement("div");
+        const botao = document.createElement("button");
+
+        item.classList.add("produto");
+        item.dataset.id = produto.id;
+
+        imagem.classList.add("produto-imagem");
+        imagem.src = produto.imagem;
+        imagem.alt = produto.nome;
+
+        categoria.classList.add("produto-categoria");
+        categoria.textContent = produto.categoria;
+
+        nome.classList.add("produto-nome");
+        nome.textContent = produto.nome;
+
+        preco.classList.add("produto-preco");
+        preco.textContent = formatarPreco(produto.preco);
+
+        acoes.classList.add("produto-acoes");
+
+        botao.classList.add("acao-produto");
+        botao.type = "button";
+        botao.dataset.id = produto.id;
+        botao.textContent = "Remover";
+        botao.addEventListener("click", removerProduto);
+
+        const botaoEditar = document.createElement("button");
+        botaoEditar.classList.add("acao-produto");
+        botaoEditar.type = "button";
+        botaoEditar.textContent = "Editar";
+        botaoEditar.dataset.id = produto.id;
+        botaoEditar.setAttribute("aria-label", "Editar " + produto.nome);
+        botaoEditar.addEventListener("click", editarProduto);
+
+        item.appendChild(imagem);
+        item.appendChild(categoria);
+        item.appendChild(nome);
+        item.appendChild(preco);
+
+        acoes.appendChild(botaoEditar);
+        acoes.appendChild(botao);
+
+        item.append(acoes);
+
+        lista.appendChild(item);
+    })
+
+    const total = produtos.reduce((acumulador, produto) => {
+        return acumulador + produto.preco;
+    }, 0)
+
+    quantidade.textContent = produtos.length;
+    totalElemento.textContent = formatarPreco(total);
+    avisoVazio.hidden = produtos.length > 0;
+}
+
+function formatarPreco(valor) {
+    return "R$ " + valor.toFixed(2).replace(".", ",");
+}
+
+function removerProduto(evento) {
+    const id = Number(evento.currentTarget.dataset.id);
+
+    produtos = produtos.filter((produto) => {
+        return produto.id !== id;
+    })
+
+    renderizarProdutos();
+}
+
+function aplicarOrdenacao() {
+    if (ordem.value === "crescente") {
+        produtos.sort((a, b) => a.preco - b.preco);
+    }
+    else if (ordem.value === "decrescente") {
+        produtos.sort((a, b) => b.preco - a.preco);
+    }
+    else if (ordem.value === "nome") {
+        produtos.sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
+    }
+    else {
+        produtos.sort((a, b) => a.id - b.id);
+    }
+}
+
+const mensagem = document.querySelector("#mensagem");
+
+function mostrarErro(campo, texto) {
+    campo.classList.add("invalido");
+    campo.setAttribute("aria-invalid", "true");
+
+    mensagem.textContent = texto;
+    mensagem.classList.add("erro");
+
+    campo.focus();
+}
+
+>>>>>>> 59e191f78bf9cb5df0161deb97da289703bdfcc1
 let idEmEdicao = null;
 
 function editarProduto(evento) {
-  const id = Number(evento.currentTarget.dataset.id);
+    const id = Number(evento.currentTarget.dataset.id);
 
-  const produto = produtos.find((item) => {
-    return item.id === id;
-  })
+    const produto = produtos.find((item) => {
+        return item.id === id;
+    })
 
-  if (!produto) return;
+    if (!produto) return;
 
+<<<<<<< HEAD
   idEmEdicao = id;
 
   campoNome.value = produto.nome;
@@ -200,21 +355,37 @@ function editarProduto(evento) {
   contadorNome.textContent = produto.nome.length + " caracteres";
   botaoSalvar.textContent = "Salvar alterações";
   botaoCancelar.hidden = false;
+=======
+    idEmEdicao = id;
+>>>>>>> 59e191f78bf9cb5df0161deb97da289703bdfcc1
 
-  campoNome.focus();
+    campoNome.value = produto.nome;
+    campoPreco.value = produto.preco;
+    campoCategoria.value = produto.categoria;
+    contadorNome.textContent = produto.nome.length + " caracteres";
+    botaoSalvar.textContent = "Salvar alterações";
+    botaoCancelar.hidden = false;
+
+    campoNome.focus();
 }
 
 botaoCancelar.addEventListener("click", () => {
+<<<<<<< HEAD
   finalizarFormulario();
   mensagem.textContent = "Edição cancelada.";
+=======
+    finalizarFormulario();
+    mensagem.textContent = "Edição cancelada.";
+>>>>>>> 59e191f78bf9cb5df0161deb97da289703bdfcc1
 })
 
 
 const formulario = document.querySelector("#formulario");
 
 function salvarProduto(evento) {
-  evento.preventDefault();
+    evento.preventDefault();
 
+<<<<<<< HEAD
   const nome = campoNome.value.trim();
   const preco = Number(campoPreco.value);
   const categoria = campoCategoria.value;
@@ -261,25 +432,72 @@ function salvarProduto(evento) {
 
   finalizarFormulario();
   salvarcolecao();
+=======
+    const nome = campoNome.value.trim();
+    const preco = Number(campoPreco.value);
+    const categoria = campoCategoria.value;
+
+    if (nome.length < 2) {
+        mostrarErro(campoNome, "Informe um nome com pelo menos 2 caracteres.");
+        return;
+    }
+
+    if (preco <= 0) {
+        mostrarErro(campoPreco, "Informe um preço maior que zero.");
+        return;
+    }
+
+    if (idEmEdicao !== null) {
+        const produto = produtos.find((item) => {
+            return item.id === idEmEdicao;
+        })
+
+        produto.nome = nome;
+        produto.preco = preco;
+        produto.categoria = categoria;
+    } else {
+        produtos.push({
+            id: proximoId,
+            nome: nome,
+            preco: preco,
+            categoria: categoria,
+            imagem: "assets/nova-peca.svg"
+        });
+        proximoId++;
+    }
+
+    renderizarProdutos();
+
+    if (idEmEdicao !== null) {
+        mensagem.textContent = "Peça atualizada.";
+        mensagem.classList.add("sucesso");
+    } else {
+        mensagem.textContent = "Peça adicionada à coleção";
+        mensagem.classList.add("sucesso");
+    }
+    
+    finalizarFormulario();
+>>>>>>> 59e191f78bf9cb5df0161deb97da289703bdfcc1
 }
 
 function finalizarFormulario() {
-  formulario.reset();
+    formulario.reset();
 
-  contadorNome.textContent = "0 caracteres";
-  campoNome.classList.remove("invalido");
-  campoPreco.classList.remove("invalido");
+    contadorNome.textContent = "0 caracteres";
+    campoNome.classList.remove("invalido");
+    campoPreco.classList.remove("invalido");
 
-  campoNome.removeAttribute("aria-invalid");
-  campoPreco.removeAttribute("aria-invalid");
+    campoNome.removeAttribute("aria-invalid");
+    campoPreco.removeAttribute("aria-invalid");
 
-  campoNome.focus();
+    campoNome.focus();
 }
 
 formulario.addEventListener("submit", salvarProduto);
 
 ordem.addEventListener("change", renderizarProdutos);
 
+<<<<<<< HEAD
 const campoBusca = document.querySelector("#busca");
 document.querySelector("#area-busca").hidden = false;
 campoBusca.addEventListener("input", renderizarProdutos);
@@ -358,3 +576,6 @@ filtrosCategoria.forEach((botao) => {
 
 carregarColecao();
 renderizarProdutos();
+=======
+renderizarProdutos();
+>>>>>>> 59e191f78bf9cb5df0161deb97da289703bdfcc1
