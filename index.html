@@ -10,6 +10,8 @@
   <link rel="stylesheet" href="favoritos.css">
   <script src="validacao-colecao.js" defer></script>
   <script src="script.js" defer></script>
+  <script src="exemplos-fetch.js" defer></script>
+  <script src="api.js" defer></script>
 </head>
 <body>
   <a class="pular" href="#colecao">Ir para a coleção</a>
@@ -86,7 +88,17 @@
         </aside>
 
         <section class="colecao" id="colecao" aria-labelledby="titulo-colecao">
-          <div class="colecao-cabecalho">
+          <section id="area-importacao" class="importacao" aria-labelledby="titulo-importacao" aria-busy="false">
+            <div>
+              <h3 id="titulo-importacao">Há mais para descobrir.</h3>
+              <p>Encontre novas peças para a sua coleção.</p>
+              <p id="mensagem-api" class="mensagem" role="status"></p>
+            </div>
+            <div class="controles-importacao">
+              <button id="importar-produtos" class="botao" type="button">Explorar novas peças ↗</button>
+            </div>
+          </section>
+          <div class="colecao-cabecalho" style="margin-top: 22px;">
             <h2 id="titulo-colecao">Nossa coleção</h2>
             <label class="edicao" for="ordem" hidden>Ordenar</label>
             <select id="ordem" class="ordenacao" aria-label="Ordenar coleção">
@@ -117,6 +129,7 @@
               <div id="resumo-valor-favoritos" hidden><strong id="total-favoritos">R$ 0,00</strong><span>valor dos favoritos</span></div>
             </div>
           </section>
+
           <p id="mensagem-armazenamento" class="mensagem" role="status"></p>
           <ul id="lista-produtos" class="lista-produtos">
             <li class="produto" data-id="1">
